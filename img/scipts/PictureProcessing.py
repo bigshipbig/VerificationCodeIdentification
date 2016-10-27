@@ -18,13 +18,13 @@ class ImageProcessing():
 	#二值数组
 	def __init__(self,Img,tmpt2val={}):
 		self.image = Img
-		print type(Img)
+		#print type(Img)
 		self.t2val = tmpt2val
 		self.PictureList = []
 		self.clearimg=""
-		print Img.size
+		#print Img.size
 
-	def twoValue(self,G):
+	def twoValue(self,G=160):
 		for y in xrange(0,self.image.size[1]):
 			for x in xrange(0,self.image.size[0]):
 				g = self.image.getpixel((x,y))
@@ -34,7 +34,7 @@ class ImageProcessing():
 					self.t2val[(x,y)] = 0
 
 	#去除图片的噪声
-	def clearNoise(self,N=4,Z=1):
+	def clearNoise(self,N=4,Z=2):
 		for i in xrange(0,Z):
 			self.t2val[(0,0)] = 1
 			self.t2val[(self.image.size[0] - 1,self.image.size[1] - 1)] = 1
@@ -61,7 +61,7 @@ class ImageProcessing():
 					if nearDots < N:
 						self.t2val[(x,y)] = 1
 
-	#保存二值去噪后的图片					
+	#保存二值去噪后的图片
 	def saveImage(self,filename,size=(100,100)):
 		size = self.image.size
 		tmpimage = Image.new("1",size)
@@ -71,32 +71,34 @@ class ImageProcessing():
 				draw.point((x,y),self.t2val[(x,y)])
 		self.clearimg = draw
 		tmpimage.save(filename)
-	
+
 	def gett2val(self):
 		return self.t2val
 
 	def getImg(self):
 		return self.image
-		
+
 	#打印二值数组
 	def print_t2val(self):
 		for y in xrange(0,self.image.size[1]):
 			for x in xrange(0,self.image.size[0]):
 				print self.t2val[(x,y)],
 			print
-	
+
 	def drawimg(self,l,r):
 		tmpimage = Image.new("1",(r-l+1,self.image.size[1]))
 		draw = ImageDraw.Draw(tmpimage)
+		"""
 		if r-l+1 <= 10:
 			return 0
+		"""
 		print "size = (%d , %d) ,l = %d,r = %d "%(r-l+1,self.image.size[1],l,r)
 		for x in xrange(l,r):
 			for y in xrange(0,self.image.size[1]):
 				draw.point((x-l,y),self.t2val[(x,y)])
 		self.PictureList.append(tmpimage)
 		return 1
-	
+
 	#投影法切割字符
 	def CharacterSegmentation(self,C=5):
 		pixcount = self.image.size[0]*[0];
@@ -111,28 +113,21 @@ class ImageProcessing():
 		boundary.append(len(pixcount)-1)
 		start = boundary[0]
 		for i in xrange(1,len(boundary)):
-			if self.drawimg(start,boundary[i]) == 1:
+			if boundary[i] - start == 1:
 				start = boundary[i]
-				
+			elif self.drawimg(start,boundary[i]) == 1:
+				start = boundary[i]
+
+	def normalized(self,img,wide=35,high=40):
+		return img.resize((wide, high), Image.ANTIALIAS)
+
 	def showPicList(self):
-		print "len = %d"%(len(self.PictureList))
+		#print "len = %d"%(len(self.PictureList))
+		i=1
 		for item in self.PictureList:
-			item.show()
-			
-pp = ImageProcessing(Image.open(sys.argv[1]).convert("L"))
-
-pp.getImg().show()
-
-pp.twoValue(int(sys.argv[2]))
-
-pp.clearNoise()
-
-pp.saveImage("./tmp.jpg")
-
-Image.open("./tmp.jpg").show()
-
-pp.CharacterSegmentation()
-
-pp.print_t2val() 
-
-pp.showPicList()
+			tmp = self.normalized(item)
+			tmp.show()
+			tmp.save(str(i)+".jpg")
+			i = i + 1
+	def getPicList(self):
+		return self.PictureList

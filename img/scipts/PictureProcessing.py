@@ -92,7 +92,7 @@ class ImageProcessing():
 		if r-l+1 <= 10:
 			return 0
 		"""
-		print "size = (%d , %d) ,l = %d,r = %d "%(r-l+1,self.image.size[1],l,r)
+		#print "size = (%d , %d) ,l = %d,r = %d "%(r-l+1,self.image.size[1],l,r)
 		for x in xrange(l,r):
 			for y in xrange(0,self.image.size[1]):
 				draw.point((x-l,y),self.t2val[(x,y)])
@@ -121,6 +121,9 @@ class ImageProcessing():
 	def normalized(self,img,wide=35,high=40):
 		return img.resize((wide, high), Image.ANTIALIAS)
 
+	def getPicList(self):
+		return [ self.normalized(item) for item in self.PictureList]
+
 	def showPicList(self):
 		#print "len = %d"%(len(self.PictureList))
 		i=1
@@ -129,5 +132,10 @@ class ImageProcessing():
 			tmp.show()
 			tmp.save(str(i)+".jpg")
 			i = i + 1
-	def getPicList(self):
-		return self.PictureList
+	
+	def t2_val_to_str(self):
+		s = ""
+		for y in xrange(0,self.image.size[1]):
+			for x in xrange(0,self.image.size[0]):
+				s = s + str(self.t2val[(x,y)])+","
+		return s

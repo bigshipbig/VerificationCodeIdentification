@@ -31,12 +31,14 @@ def main():
 		pp.CharacterSegmentation()
 		piclist = pp.getPicList()
 		prename = filename.split('.')[0]
-		if len(piclist) != len(prename):
-			print "Picture CharacterSegmentation Error!"
+		if len(piclist) < len(prename):
+			print "Picture CharacterSegmentation Error! filename is %s,size = %d"%(filename,len(piclist))
 			cnt = cnt + 1
 			pass
 		else:
 			for index in range(len(piclist)):
+				if index >= 4:
+					continue
 				tmppic = ImageProcessing(piclist[index])
 				s = str(config.label_map[prename[index]])
 				tmppic.twoValue(0)

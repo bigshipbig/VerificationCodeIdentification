@@ -34,7 +34,7 @@ class ImageProcessing():
 					self.t2val[(x,y)] = 0
 
 	#去除图片的噪声
-	def clearNoise(self,N=4,Z=2):
+	def clearNoise(self,N=4,Z=3):
 		for i in xrange(0,Z):
 			self.t2val[(0,0)] = 1
 			self.t2val[(self.image.size[0] - 1,self.image.size[1] - 1)] = 1
@@ -88,10 +88,6 @@ class ImageProcessing():
 	def drawimg(self,l,r):
 		tmpimage = Image.new("1",(r-l+1,self.image.size[1]))
 		draw = ImageDraw.Draw(tmpimage)
-		"""
-		if r-l+1 <= 10:
-			return 0
-		"""
 		#print "size = (%d , %d) ,l = %d,r = %d "%(r-l+1,self.image.size[1],l,r)
 		for x in xrange(l,r):
 			for y in xrange(0,self.image.size[1]):
@@ -100,7 +96,7 @@ class ImageProcessing():
 		return 1
 
 	#投影法切割字符
-	def CharacterSegmentation(self,C=5):
+	def CharacterSegmentation(self,C=4):
 		pixcount = self.image.size[0]*[0];
 		for x in xrange(0,self.image.size[0]):
 			for y in xrange(0,self.image.size[1]):

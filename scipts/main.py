@@ -7,6 +7,7 @@ from sklearn.cross_validation import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 import datetime
 import sys
+from sklearn.externals import joblib
 
 def read_data(datapath):
     df = pd.read_csv(datapath, header = None)
@@ -18,7 +19,7 @@ def get_label_feat(df):
     return x, y
 
 def randomforest():
-    print >> sys.stderr, "This Classifier is randomforest", datetime.datetime.now()
+    print >> sys.stderr, "This Classifier is RandomForest", datetime.datetime.now()
     print >> sys.stderr, "TrainingSet Feature Extraction... ", datetime.datetime.now()
     train_df = read_data(traindata_path)
     train_x, train_y = get_label_feat(train_df)
@@ -36,10 +37,11 @@ def randomforest():
     test_df = read_data(testdata_path)
     test_x, test_y = get_label_feat(test_df)
     clf = RandomForestClassifier(n_estimators=100, max_depth=7)
-    clf.fit(train_x.values, train_y.values)
+    rf = clf.fit(train_x.values, train_y.values)
     score = cross_val_score(clf, train_x, train_y, cv=3)
     print >> sys.stderr, "Cross Validation" ,score ,datetime.datetime.now()
     print clf.score(test_x.values, test_y.values)
+    joblib.dump(rf, './model/rf.model',compress=3)
 
 def knn():
     print >> sys.stderr, "This Classifier is KNN", datetime.datetime.now()

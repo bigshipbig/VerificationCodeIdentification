@@ -1,7 +1,8 @@
 # -*- encoding:utf-8 -*- 
 import wx
-import  cStringIO
-import os
+import cStringIO
+from predict import *
+
 app = wx.App()
 
 imgloc = ""
@@ -70,6 +71,11 @@ def openFile(evt):
 	flag=wx.ALIGN_CENTER,
 	border = 5)
 
+def distinguish(evt):
+	file = filename.GetValue()
+	result = predict(file)
+	write(contents2,result+"\n")
+
 bkg = wx.Panel(win)
 
 openBtn = wx.Button(bkg, label='Open')
@@ -77,6 +83,8 @@ openBtn = wx.Button(bkg, label='Open')
 openBtn.Bind(wx.EVT_BUTTON, openFile)
 
 distinguishBtn = wx.Button(bkg, label='Distinguish')
+
+distinguishBtn.Bind(wx.EVT_BUTTON, distinguish)
 
 filename = wx.TextCtrl(bkg, style=wx.TE_READONLY)
 
